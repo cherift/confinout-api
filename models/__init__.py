@@ -30,6 +30,7 @@ def initDBTables():
                 place VARCHAR(50),
                 address VARCHAR(255),
                 price FLOAT,
+                date DATETIME,
                 description VARCHAR(255),
                 FOREIGN KEY (typeid) REFERENCES Types(id)
                 link VARCHAR(50),
