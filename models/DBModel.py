@@ -9,8 +9,16 @@ class DBModel :
 
         cursor = db.cursor()
 
+        if not self.tableExists("Types") :
+            cursor.execute('''
+                CREATE TABLE Types(
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255)
+                )
+            ''')
+
         if not self.tableExists("Events") :
-            cursor.exectute('''
+            cursor.execute('''
                 CREATE TABLE Events(
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     place VARCHAR(50),
@@ -18,47 +26,43 @@ class DBModel :
                     price FLOAT,
                     date DATETIME,
                     description VARCHAR(255),
-                    FOREIGN KEY (typeid) REFERENCES Types(id)
+                    typeid INT,
+                    FOREIGN KEY (typeid) REFERENCES Types(id),
                     link VARCHAR(50),
                     number VARCHAR(12),
-                    long FLOAT,
-                    lat FLOAT
+                    longitude FLOAT,
+                    latitude FLOAT,
                     inside INT(1),
                     available INT(1),
                     handicap INT(1)
                 )
             ''')
 
-        if not self.tableExists("Types") :
-            cursor.exectute('''
-                CREATE TABLE Types(
-                    id INT AUTO_INCREMENT PRIMARY KEY, 
-                    name VARCHAR(255)
-                )
-            ''')
-
         if not self.tableExists("Notes"):
-            cursor.exectute('''
+            cursor.execute('''
                 CREATE TABLE Notes(
                     id INT AUTO_INCREMENT PRIMARY KEY, 
-                    FOREIGN KEY (eventid) REFERENCES Events(id),
+                    eventid INT,
+                    FOREIGN KEY (eventid) REFERENCES Events (id),
                     value INT
                 )
             ''')
 
         if not self.tableExists("Comments"):
-            cursor.exectute('''
+            cursor.execute('''
                 CREATE TABLE Comments(
-                    id INT AUTO_INCREMENT PRIMARY KEY, 
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    eventid INT,
                     FOREIGN KEY (eventid) REFERENCES Events(id),
                     value VARCHAR(255)
                 )
             ''')
 
         if not self.tableExists("Notifs"):
-            cursor.exectute('''
+            cursor.execute('''
                 CREATE TABLE Notifs(
-                    id INT AUTO_INCREMENT PRIMARY KEY, 
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    eventid INT,
                     FOREIGN KEY (eventid) REFERENCES Events(id),
                     value VARCHAR(255)
                 )

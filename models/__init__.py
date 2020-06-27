@@ -1,2 +1,2 @@
-from .setup import db
-
+from .DBModel import DBModel
+from .EventModel import EventModel
