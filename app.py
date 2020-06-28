@@ -13,6 +13,9 @@ def home():
 
 @app.route("/addevent", methods = ["GET", "POST"])
 def addevent():
+    """
+    Adds a new event
+    """
 
     params = request.args or request.form
 
@@ -28,38 +31,67 @@ def addevent():
         
         event = EventModel(params["place"], params["address"], params["price"],
                 params[ "date"], params["description"], params["typeid"],
-                params["link"] if not "link" in params else "NULL",
-                params["number"] if not "number" in params else "NULL",
                 longitude, latitude,
-                params["inside"] if not "inside" in params else 1,
-                params["available"] if not "available" in params else 1,
-                params["handicap"] if not "handicap" in params else 1)
-
+                params["link"] if "link" in params else "NULL",
+                params["number"] if "number" in params else "NULL",
+                params["inside"] if "inside" in params else 1,
+                params["available"] if "available" in params else 1,
+                params["handicap"] if "handicap" in params else 1)
+        
         event.save()
         
         return "New event saved."
     except:
-        return "Error: ne or more required parameters (place, address, price, date, description, typeid) were missing."
+        return "Error: one or more required parameters (place, address, price, date, description, typeid) were missing."
 
+
+@app.route("/events")
+def events():
+    """
+    Gets all events
+    """
+    return json.dumps({
+        "result" : [{
+            "id"          : e[0],
+            "place"       : e[1],
+            "address"     : e[2],
+            "price"       : e[3],
+            "date"        : e[4].strftime("%d/%m/%Y, %H:%M:%S"),
+            "description" : e[5],
+            "typeid"      : e[6],
+            "link"        : e[7],
+            "number"      : e[8],
+            "longitude"   : e[9],
+            "latitude"    : e[10],
+            "inside"      : e[11],
+            "available"   : e[12],
+            "handicap"    : e[13]
+        } for e in database.events()]
+    }, ensure_ascii=False).encode('utf8')
 
 @app.route("/addtype/<name>")
 def addtype(name):
+    """
+    Adds new event type
+
+    Parameters
+    ----------
+    name: the name of the event type
+    """
     type = TypeModel(name)
     type.save()
     return "new type of event added"
 
 @app.route("/types")
 def types():
-    result = []
-
-    for t in database.types():
-        result.append({
-            "id" : t[0],
-            "name" : t[1] 
-        })
-
+    """
+    Gests all event types 
+    """
     return json.dumps({
-        "result" : result
+        "result" : [{
+            "id" : t[0], 
+            "name" : t[1] 
+        } for t in  database.types()]
     }, ensure_ascii=False).encode('utf8')
 
 if __name__ == "__main__":

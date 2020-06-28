@@ -76,6 +76,14 @@ class DBModel :
 
         return result
 
+    def events(self):
+        cursor = db.cursor()
+        cursor.execute("select * from events")
+        result = cursor.fetchall()
+        cursor.close()
+
+        return result
+
     def tableExists(self, table_name):
         """
         Checks if table exists in database.
