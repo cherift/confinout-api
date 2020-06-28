@@ -1,7 +1,8 @@
 from flask import Flask, request
 
-from models import DBModel, EventModel
+from models import DBModel, EventModel, TypeModel
 from geopy.geocoders import Nominatim
+import json
 
 app = Flask(__name__)
 database = DBModel()
@@ -39,6 +40,27 @@ def addevent():
         return "New event saved."
     except:
         return "Error: ne or more required parameters (place, address, price, date, description, typeid) were missing."
+
+
+@app.route("/addtype/<name>")
+def addtype(name):
+    type = TypeModel(name)
+    type.save()
+    return "new type of event added"
+
+@app.route("/types")
+def types():
+    result = []
+
+    for t in database.types():
+        result.append({
+            "id" : t[0],
+            "name" : t[1] 
+        })
+
+    return json.dumps({
+        "result" : result
+    }, ensure_ascii=False).encode('utf8')
 
 if __name__ == "__main__":
     app.run(debug=True)
