@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from models import DBModel, EventModel, TypeModel, NoteModel
+from models import DBModel, EventModel, TypeModel, NoteModel, CommentModel
 from geopy.geocoders import Nominatim
 import json
 
@@ -113,6 +113,14 @@ def types():
 
 @app.route("/rate/<int:event_id>/<int:value>")
 def rate(event_id, value):
+    """
+    Marks an event
+
+    Paramters
+    ---------
+    event_id: the id of the event to mark
+    value: the rate gived to the event
+    """
     try:    
         assert 1 <= value and value <= 5
 
@@ -128,11 +136,59 @@ def rate(event_id, value):
 
 @app.route("/rates/<int:event_id>")
 def rates(event_id):
+    """
+    Gets and an event rates.
+
+    Paramters
+    ---------
+    event_id: the id of the event
+    """
     result = database.rates(event_id)
     return json.dumps({
         "event" : event_id,
         "rate"  : round(float(result), 1) if result else 0
     })
+
+
+@app.route("/comment/<int:event_id>/<message>")
+def comment(event_id, message):
+    """
+    Comments an event
+
+    Paramters
+    ---------
+    event_id: the id of the event to comment
+    message: the comment gived to the event
+    """
+    com = CommentModel(event_id, message)
+
+    try:
+        com.save()
+        return "Your comment is saved."
+    except:
+        return "No event with the id {} founded".format(event_id)    
+
+
+@app.route("/comments/<int:event_id>")
+def comments(event_id):
+    """
+    Gets an event comments.
+
+    Paramters
+    ---------
+    event_id: the id of the event
+    """
+    result = database.comments(event_id)
+
+    return json.dumps({
+        "count"  : len(result),
+        "result" : [{
+                "date"    : c[0].strftime("%d/%m/%Y"),
+                "message" : c[1]
+            } for c in result
+        ]
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)

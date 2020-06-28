@@ -52,6 +52,7 @@ class DBModel :
             cursor.execute('''
                 CREATE TABLE Comments(
                     id INT AUTO_INCREMENT PRIMARY KEY,
+                    date DATETIME,
                     eventid INT,
                     FOREIGN KEY (eventid) REFERENCES Events(id),
                     value VARCHAR(255)
@@ -62,6 +63,7 @@ class DBModel :
             cursor.execute('''
                 CREATE TABLE Notifs(
                     id INT AUTO_INCREMENT PRIMARY KEY,
+                    date DATETIME,
                     eventid INT,
                     FOREIGN KEY (eventid) REFERENCES Events(id),
                     value VARCHAR(255)
@@ -97,7 +99,15 @@ class DBModel :
         result = cursor.fetchone()
         cursor.close()
 
-        return result[0]   
+        return result[0]
+
+    def comments(self, event_id):
+        cursor = db.cursor()
+        cursor.execute("select date, value from comments where eventid = %s", (event_id, ))
+        result = cursor.fetchall()
+        cursor.close()
+
+        return result
 
     def tableExists(self, table_name):
         """
