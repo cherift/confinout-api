@@ -84,6 +84,14 @@ class DBModel :
 
         return result
 
+    def cancel(self, event_id):
+        cursor = db.cursor()
+        cursor.execute("UPDATE events SET available = 0 WHERE id = %s", (event_id, ))
+        cursor.close()
+        
+        return "The event {} has been cancelled.".format(event_id)
+        
+
     def tableExists(self, table_name):
         """
         Checks if table exists in database.

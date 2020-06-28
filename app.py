@@ -71,6 +71,18 @@ def events():
     }, ensure_ascii=False).encode('utf8')
 
 
+@app.route("/cancel/<int:event_id>")
+def cancel(event_id):
+    """
+    Cancels an event
+
+    Parameters
+    ----------
+    event_id : the id of the event to cancel
+    """
+    return database.cancel(event_id)
+
+
 @app.route("/addtype/<name>")
 def addtype(name):
     """
