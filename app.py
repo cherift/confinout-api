@@ -52,6 +52,7 @@ def events():
     Gets all events
     """
     return json.dumps({
+        "count" : len(database.events()),
         "result" : [{
             "id"          : e[0],
             "place"       : e[1],
