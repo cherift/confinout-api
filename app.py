@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from models import DBModel, EventModel, TypeModel
+from models import DBModel, EventModel, TypeModel, NoteModel
 from geopy.geocoders import Nominatim
 import json
 
@@ -110,6 +110,29 @@ def types():
         } for t in  database.types()]
     }, ensure_ascii=False).encode('utf8')
 
+
+@app.route("/rate/<int:event_id>/<int:value>")
+def rate(event_id, value):
+    try:    
+        assert 1 <= value and value <= 5
+
+        note = NoteModel(event_id, value)
+        try:
+            note.save()
+            return "Your note is saved."
+        except:
+            return "No event with the id {} founded".format(event_id)
+    except AssertionError:
+        return "rate value must be between 1 and 5"
+
+
+@app.route("/rates/<int:event_id>")
+def rates(event_id):
+    result = database.rates(event_id)
+    return json.dumps({
+        "event" : event_id,
+        "rate"  : round(float(result), 1) if result else 0
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

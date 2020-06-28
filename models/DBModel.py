@@ -88,9 +88,16 @@ class DBModel :
         cursor = db.cursor()
         cursor.execute("UPDATE events SET available = 0 WHERE id = %s", (event_id, ))
         cursor.close()
-        
-        return "The event {} has been cancelled.".format(event_id)
-        
+
+        return "The event {} has been cancelled.".format(event_id) 
+
+    def rates(self, event_id):
+        cursor = db.cursor()
+        cursor.execute("select avg(value) as average from notes where eventid = %s", (event_id, ))
+        result = cursor.fetchone()
+        cursor.close()
+
+        return result[0]   
 
     def tableExists(self, table_name):
         """
