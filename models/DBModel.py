@@ -109,6 +109,14 @@ class DBModel :
 
         return result
 
+    def notifications(self, event_id):
+        cursor = db.cursor()
+        cursor.execute("select date, value from notifs where eventid = %s", (event_id, ))
+        result = cursor.fetchall()
+        cursor.close()
+
+        return result
+
     def tableExists(self, table_name):
         """
         Checks if table exists in database.

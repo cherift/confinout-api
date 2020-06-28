@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from models import DBModel, EventModel, TypeModel, NoteModel, CommentModel
+from models import DBModel, EventModel, TypeModel, NoteModel, CommentModel, NotificationModel
 from geopy.geocoders import Nominatim
 import json
 
@@ -81,7 +81,15 @@ def cancel(event_id):
     ----------
     event_id : the id of the event to cancel
     """
-    return database.cancel(event_id)
+    notif = NotificationModel(event_id, "An event you must go has been cancelled")
+
+    try:
+        notif.save()
+        res = database.cancel(event_id)
+        return res
+    except:
+        return "No event with the id {} founded".format(event_id)   
+
 
 
 @app.route("/addtype/<name>")
@@ -179,6 +187,46 @@ def comments(event_id):
     event_id: the id of the event
     """
     result = database.comments(event_id)
+
+    return json.dumps({
+        "count"  : len(result),
+        "result" : [{
+                "date"    : c[0].strftime("%d/%m/%Y"),
+                "message" : c[1]
+            } for c in result
+        ]
+    })
+
+
+@app.route("/notify/<int:event_id>/<message>")
+def notify(event_id, message):
+    """
+    Adds a notification for an event
+
+    Paramters
+    ---------
+    event_id: the id of the event to notify
+    message: the notification message
+    """
+    notif = NotificationModel(event_id, message)
+
+    try:
+        notif.save()
+        return "Notification saved."
+    except:
+        return "No event with the id {} founded".format(event_id)    
+
+
+@app.route("/notifications/<int:event_id>")
+def notifications(event_id):
+    """
+    Gets notifications related to an event.
+
+    Paramters
+    ---------
+    event_id: the id of the event
+    """
+    result = database.notifications(event_id)
 
     return json.dumps({
         "count"  : len(result),
