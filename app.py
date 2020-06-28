@@ -11,6 +11,7 @@ database = DBModel()
 def home():
     return "Is working..." 
 
+
 @app.route("/addevent", methods = ["GET", "POST"])
 def addevent():
     """
@@ -69,6 +70,7 @@ def events():
         } for e in database.events()]
     }, ensure_ascii=False).encode('utf8')
 
+
 @app.route("/addtype/<name>")
 def addtype(name):
     """
@@ -82,6 +84,7 @@ def addtype(name):
     type.save()
     return "new type of event added"
 
+
 @app.route("/types")
 def types():
     """
@@ -93,6 +96,7 @@ def types():
             "name" : t[1] 
         } for t in  database.types()]
     }, ensure_ascii=False).encode('utf8')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

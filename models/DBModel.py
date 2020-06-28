@@ -78,7 +78,7 @@ class DBModel :
 
     def events(self):
         cursor = db.cursor()
-        cursor.execute("select * from events")
+        cursor.execute("select * from events where available = 1")
         result = cursor.fetchall()
         cursor.close()
 
