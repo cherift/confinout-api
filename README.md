@@ -20,6 +20,12 @@ Sets in the variables evironnement these parameters :
 
 `CDBNAME` the database name
 
+## Authorization
+
+No api key required to use this App. We judge that it is not necessary because the project must be accessible by everyone but only database information are hidden so that to avoid every actions from malicious people like deleting database or removing tables and even changing database access.
+
+You can access freely on the api from this link [CONFINOUT-API](https://confinoutapi.herokuapp.com/)
+
 ## Use Cases
 
 ### - Add a new event
