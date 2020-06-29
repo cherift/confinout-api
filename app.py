@@ -65,9 +65,9 @@ def events():
             "number"      : e[8],
             "longitude"   : e[9],
             "latitude"    : e[10],
-            "inside"      : e[11],
-            "available"   : e[12],
-            "handicap"    : e[13]
+            "inside"      : True if e[11] == 1 else False,
+            "available"   : True if e[12] == 1 else False,
+            "handicap"    : True if e[13] == 1 else False
         } for e in database.events()]
     }, ensure_ascii=False).encode('utf8')
 
